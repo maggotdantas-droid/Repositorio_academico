@@ -1,0 +1,19 @@
+
+<h2>Login</h2>
+
+{% if erro %}
+<p style="color:red">{{erro}}</p>
+{% endif %}
+
+
+<form method="post">
+    {% csrf_token %}
+    <input name="username" placeholder="Usuário"><br><br>
+    <input name="password" type="password" placeholder="Senha"><br><br>
+    <button type="submit">Entrar</button>
+</form>
+
+<br>
+<a href="/register/">Registrar</a>
+</body>
+</html>

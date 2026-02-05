@@ -1,0 +1,10 @@
+<h2>Enviar Trabalho</h2>
+
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Enviar</button>
+</form>
+
+<a href="{% url 'dashboard' %}">Voltar</a>
+

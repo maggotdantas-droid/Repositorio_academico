@@ -1,0 +1,12 @@
+<h2>{{ trabalho.titulo }}</h2>
+<p><strong>Descrição:</strong> {{ trabalho.descricao }}</p>
+<p><strong>Autor:</strong> {{ trabalho.autor.username }}</p>
+<p><strong>Data de envio:</strong> {{ trabalho.data_envio }}</p>
+<p><strong>Arquivo:</strong> <a href="{{ trabalho.arquivo.url }}" target="_blank">Baixar</a></p>
+
+{% if perfil.user == trabalho.autor or perfil.tipo == 'Admin' %}
+    <a href="{% url 'editar_trabalho' trabalho.id %}">Editar</a>
+    <a href="{% url 'excluir_trabalho' trabalho.id %}">Excluir</a>
+{% endif %}
+
+<a href="{% url 'dashboard' %}">Voltar</a>

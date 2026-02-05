@@ -1,0 +1,8 @@
+<h2>Excluir Trabalho</h2>
+<p>Tem certeza que deseja excluir o trabalho "{{ trabalho.titulo }}"?</p>
+
+<form method="post">
+    {% csrf_token %}
+    <button type="submit">Confirmar exclusão</button>
+    <a href="{% url 'dashboard' %}">Cancelar</a>
+</form>

@@ -1,0 +1,44 @@
+<h2>Dashboard</h2>
+<p>Bem-vindo, {{ request.user.username }}{% if request.user.is_staff %} (ADMIN){% endif %}</p>
+
+{% if perfil and perfil.tipo == 'ALUNO' %}
+    <a href="{% url 'enviar_trabalho' %}">Enviar novo trabalho</a>
+{% endif %}
+
+<table border="1" cellpadding="8" cellspacing="0">
+    <tr>
+        <th>Título</th>
+        <th>Data</th>
+        <th>Arquivo</th>
+        <th>Ações</th>
+    </tr>
+
+    {% for trabalho in trabalhos %}
+    <tr>
+        <td>{{ trabalho.titulo }}</td>
+        <td>{{ trabalho.data_envio|date:"d/m/Y H:i" }}</td>
+        <td>
+            <a href="{{ trabalho.arquivo.url }}" target="_blank">Baixar</a>
+        </td>
+        <td>
+            {% if request.user.is_staff or trabalho.autor == request.user %}
+                <form action="{% url 'excluir_trabalho' trabalho.id %}" method="post" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit">Excluir</button>
+                </form>
+            {% else %}
+                —
+            {% endif %}
+        </td>
+    </tr>
+    {% empty %}
+    <tr>
+        <td colspan="4">Nenhum trabalho enviado.</td>
+    </tr>
+    {% endfor %}
+</table>
+
+<a href="{% url 'logout' %}">Sair</a>
+
+
+
