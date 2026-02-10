@@ -82,6 +82,12 @@
                                 {% else %}
                                     <span class="text-muted small italic">Sem avaliações</span>
                                 {% endif %}
+                                {% if perfil.tipo != 'ALUNO' and comentario != null%}
+                                    <form action="{% url 'excluir_comentario' comentario.id %}" method="post" class="d-inline">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-sm btn-white border text-danger" onclick="return confirm('Excluir comentario?')"><i class="bi bi-trash"></i></button>
+                                    </form>
+                                {%endif%}
                             {% endwith %}
                         </td>
                         <td class="text-end pe-4">
