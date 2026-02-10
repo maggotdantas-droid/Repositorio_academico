@@ -121,9 +121,19 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
+
+
+# No core/settings.py
+import os
+
 STATIC_URL = 'static/'
 
-
+# Tente adicionar o caminho completo para a pasta static do app
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "usuarios", "static"),
+]
+# IMPORTANTE: STATIC_ROOT deve ser diferente de STATICFILES_DIRS
+STATIC_ROOT = os.path.join(BASE_DIR, 'assets')
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 

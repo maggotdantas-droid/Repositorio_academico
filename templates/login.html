@@ -1,19 +1,105 @@
+{% extends 'base.html' %}
+{% load static %}
 
-<h2>Login</h2>
+{% block content %}
+<style>
+    .bg-portal {
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .card-login {
+        border-radius: 1rem;
+        border: none;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        width: 100%;
+        max-width: 400px;
+    }
+    .img-logo-footer {
+        height: 75px;
+        width: auto;
+        max-width: 150px;
+        object-fit: contain;
+    }
+    .divisor-logos {
+        width: 1px;
+        height: 50px;
+        background-color: #dee2e6;
+        margin: 0 15px;
+    }
+    .idealizadores-text {
+        font-size: 0.7rem;
+        color: #6c757d;
+        line-height: 1.3;
+    }
+    .link-registro {
+        font-size: 0.85rem;
+        text-decoration: none;
+        transition: all 0.2s ease;
+    }
+    .link-registro:hover {
+        text-decoration: underline;
+        color: #0a58ca !important;
+    }
+</style>
 
-{% if erro %}
-<p style="color:red">{{erro}}</p>
-{% endif %}
+<div class="bg-portal">
+    <div class="card card-login">
+        <div class="card-body p-4">
 
+            <div class="text-center mb-4">
+                <div class="text-primary mb-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" class="bi bi-mortarboard-fill" viewBox="0 0 16 16">
+                        <path d="M8.211 2.047a.5.5 0 0 0-.422 0l-7.5 3.5a.5.5 0 0 0 .025.917l7.5 3a.5.5 0 0 0 .372 0L14 7.14V13a1 1 0 0 0-1 1v2h3v-2a1 1 0 0 0-1-1V6.739l.686-.275a.5.5 0 0 0 .025-.917l-7.5-3.5Z"/>
+                        <path d="M4.176 9.032a.5.5 0 0 0-.656.327l-.5 1.7a.5.5 0 0 0 .294.605l4.5 1.8a.5.5 0 0 0 .372 0l4.5-1.8a.5.5 0 0 0 .294-.605l-.5-1.7a.5.5 0 0 0-.656-.327L8 10.466 4.176 9.032Z"/>
+                    </svg>
+                </div>
+                <h4 class="fw-bold mb-1 text-dark">Portal Acadêmico</h4>
+                <p class="text-muted small">Repositório Digital</p>
+            </div>
 
-<form method="post">
-    {% csrf_token %}
-    <input name="username" placeholder="Usuário"><br><br>
-    <input name="password" type="password" placeholder="Senha"><br><br>
-    <button type="submit">Entrar</button>
-</form>
+            <form method="POST">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label class="form-label small fw-bold text-secondary">Usuário</label>
+                    <input type="text" name="username" class="form-control bg-light border-0" placeholder="Seu usuário" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label small fw-bold text-secondary">Senha</label>
+                    <input type="password" name="password" class="form-control bg-light border-0" placeholder="••••••••" required>
+                </div>
 
-<br>
-<a href="/register/">Registrar</a>
-</body>
-</html>
+                <button type="submit" class="btn btn-primary w-100 fw-bold py-2 mb-3 shadow-sm">
+                    Entrar
+                </button>
+
+                <div class="text-center mb-4">
+                    <span class="text-muted small">Não possui conta?</span>
+                    <a href="{% url 'register' %}" class="link-registro fw-bold text-primary">Cadastre-se</a>
+                </div>
+
+                <div class="text-center border-top pt-3">
+                    <p class="text-muted mb-2" style="font-size: 0.62rem; text-uppercase; letter-spacing: 1px;">Apoio e Realização</p>
+
+                    <div class="d-flex align-items-center justify-content-center mb-3">
+                        <img src="{% static 'image/logo_instituicao1.png' %}" alt="Logo 1" class="img-logo-footer">
+                        <div class="divisor-logos"></div>
+                        <img src="{% static 'image/logo_instituicao2.png' %}" alt="Logo 2" class="img-logo-footer">
+                        <div class="divisor-logos"></div>
+                        <img src="{% static 'image/logo_instituicao3.jpeg' %}" alt="Logo 3" class="img-logo-footer">
+                    </div>
+
+                    <div class="idealizadores-text border-top pt-2 mt-2">
+                        <p class="mb-1 fw-bold text-uppercase" style="font-size: 0.55rem; letter-spacing: 0.5px; opacity: 0.8;">Aplicativo Desenvolvido por:</p>
+                        <span class="d-block fw-medium text-dark">Bianca de Almeida Barros</span>
+                        <span class="d-block fw-medium text-dark">Danilo Silva Dantas de Santana</span>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

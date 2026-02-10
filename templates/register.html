@@ -1,13 +1,138 @@
+{% extends 'base.html' %}
+{% load static %}
 
+{% block content %}
+<style>
+    .bg-portal {
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 40px 0;
+    }
+    .card-register {
+        border-radius: 1rem;
+        border: none;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        width: 100%;
+        max-width: 450px;
+    }
+    /* Estilização dos campos para manter o padrão do login */
+    .form-control-custom {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        border-radius: 10px;
+        border: 1px solid #e0e6ed;
+        background-color: #f8f9fa;
+        font-size: 0.95rem;
+        transition: all 0.2s;
+    }
+    .form-control-custom:focus {
+        outline: none;
+        border-color: #198754;
+        background-color: #fff;
+        box-shadow: 0 0 0 0.25rem rgba(25, 135, 84, 0.1);
+    }
+    .img-logo-footer {
+        height: 70px;
+        width: auto;
+        object-fit: contain;
+    }
+    .divisor-logos {
+        width: 1px;
+        height: 25px;
+        background-color: #dee2e6;
+        margin: 0 12px;
+    }
+    .idealizadores-text {
+        font-size: 0.7rem;
+        color: #6c757d;
+        line-height: 1.3;
+    }
+</style>
 
-<h2>Cadastro</h2>
+<div class="bg-portal">
+    <div class="card card-register">
+        <div class="card-body p-4">
 
-<form method="post">
-    {% csrf_token %}
-    {{form.as_p}}
-    <button type="submit">Cadastrar</button>
-</form>
+            <div class="text-center mb-4">
+                <div class="text-success mb-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" class="bi bi-person-plus-fill" viewBox="0 0 16 16">
+                      <path d="M1 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
+                      <path fill-rule="evenodd" d="M13.5 5a.5.5 0 0 1 .5.5V7h1.5a.5.5 0 0 1 0 1H14v1.5a.5.5 0 0 1-1 0V8h-1.5a.5.5 0 0 1 0-1H13V5.5a.5.5 0 0 1 .5-.5z"/>
+                    </svg>
+                </div>
+                <h4 class="fw-bold mb-1 text-dark">Cadastro de Usuário</h4>
+                <p class="text-muted small">Crie sua conta para acessar o portal</p>
+            </div>
 
-<br>
+            {% if messages %}
+                {% for message in messages %}
+                    {% if "comentário" not in message.message|lower and "comentou" not in message.message|lower %}
+                    <div class="alert {% if message.tags == 'error' %}alert-danger{% else %}alert-info{% endif %} small py-2">
+                        {{ message }}
+                    </div>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
 
-<a href="/">Voltar para login</a>
+            <form method="post">
+                {% csrf_token %}
+                
+                <div class="mb-3">
+                    <label for="id_username" class="form-label small fw-bold text-secondary">Username:</label>
+                    <input type="text" name="username" id="id_username" class="form-control-custom" placeholder="Seu nome de usuário" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="id_email" class="form-label small fw-bold text-secondary">Email:</label>
+                    <input type="email" name="email" id="id_email" class="form-control-custom" placeholder="exemplo@email.com" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="id_password" class="form-label small fw-bold text-secondary">Senha:</label>
+                    <input type="password" name="password" id="id_password" class="form-control-custom" placeholder="••••••••" required>
+                </div>
+
+                <div class="mb-4">
+                    <label for="id_tipo" class="form-label small fw-bold text-secondary">Tipo de usuário:</label>
+                    <select name="tipo" id="id_tipo" class="form-control-custom" required>
+                        <option value="ALUNO">Aluno</option>
+                        <option value="PROFESSOR">Professor</option>
+                        <option value="ADMIN">Administrador</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn btn-success w-100 fw-bold py-2 mb-3 shadow-sm">
+                    Finalizar Cadastro
+                </button>
+
+                <div class="text-center mb-4">
+                    <a href="{% url 'login' %}" class="text-decoration-none small fw-bold text-primary">
+                        Voltar para login
+                    </a>
+                </div>
+
+                <div class="text-center border-top pt-3">
+                    <p class="text-muted mb-2" style="font-size: 0.65rem; text-uppercase; letter-spacing: 1px;">Apoio e Realização</p>
+                    
+                    <div class="d-flex align-items-center justify-content-center mb-3">
+                        <img src="{% static 'image/logo_instituicao1.png' %}" alt="Logo 1" class="img-logo-footer">
+                        <div class="divisor-logos"></div>
+                        <img src="{% static 'image/logo_instituicao2.png' %}" alt="Logo 2" class="img-logo-footer">
+                        <div class="divisor-logos"></div>
+                        <img src="{% static 'image/logo_instituicao3.jpeg' %}" alt="Logo 3" class="img-logo-footer">
+                    </div>
+
+                    <div class="idealizadores-text border-top pt-2 mt-2">
+                        <p class="mb-1 fw-bold text-uppercase" style="font-size: 0.55rem; letter-spacing: 0.5px; opacity: 0.8;">Aplicativo Desenvolvido por:</p>
+                        <span class="d-block fw-medium">Bianca de Almeida Barros</span>
+                        <span class="d-block fw-medium">Danilo Silva Dantas</span>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

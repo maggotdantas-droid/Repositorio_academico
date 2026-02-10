@@ -1,44 +1,134 @@
-<h2>Dashboard</h2>
-<p>Bem-vindo, {{ request.user.username }}{% if request.user.is_staff %} (ADMIN){% endif %}</p>
+{% extends 'base.html' %}
+{% load static %}
 
-{% if perfil and perfil.tipo == 'ALUNO' %}
-    <a href="{% url 'enviar_trabalho' %}">Enviar novo trabalho</a>
-{% endif %}
+{% block content %}
+<div class="container py-5">
+    <div class="row align-items-center mb-4">
+        <div class="col">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mb-1">
+                    <li class="breadcrumb-item active" aria-current="page">Portal</li>
+                </ol>
+            </nav>
+            <h2 class="fw-bold mb-0 text-dark">Repositório Acadêmico</h2>
+            <p class="text-muted">
+                Bem-vindo, <strong>{{ user.username }}</strong>
+                <span class="badge rounded-pill {% if perfil.tipo == 'ADMIN' %}bg-danger{% elif perfil.tipo == 'PROFESSOR' %}bg-primary{% else %}bg-success{% endif %} ms-2">
+                    {{ perfil.tipo }}
+                </span>
+            </p>
+        </div>
+        <div class="col-auto">
+            <a href="{% url 'logout' %}" class="btn btn-light border shadow-sm px-4">
+                <i class="bi bi-box-arrow-right"></i> Sair
+            </a>
+        </div>
+    </div>
 
-<table border="1" cellpadding="8" cellspacing="0">
-    <tr>
-        <th>Título</th>
-        <th>Data</th>
-        <th>Arquivo</th>
-        <th>Ações</th>
-    </tr>
+    <div class="card shadow-sm border-0 mb-4 rounded-3">
+        <div class="card-body p-3">
+            <div class="row g-3">
+                <div class="col-md-8">
+                    <form method="GET" class="d-flex gap-2">
+                        <div class="input-group">
+                            <span class="input-group-text bg-white border-end-0"><i class="bi bi-search text-muted"></i></span>
+                            <input type="text" name="busca" class="form-control border-start-0 ps-0" placeholder="Título, autor ou data..." value="{{ request.GET.busca }}">
+                        </div>
+                        <button class="btn btn-dark px-4" type="submit">Buscar</button>
+                    </form>
+                </div>
+                <div class="col-md-4 text-md-end">
+                    {% if perfil.tipo == 'ALUNO' %}
+                        <a href="{% url 'enviar_trabalho' %}" class="btn btn-success w-100 fw-bold">
+                            <i class="bi bi-plus-lg"></i> Enviar Trabalho
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
 
-    {% for trabalho in trabalhos %}
-    <tr>
-        <td>{{ trabalho.titulo }}</td>
-        <td>{{ trabalho.data_envio|date:"d/m/Y H:i" }}</td>
-        <td>
-            <a href="{{ trabalho.arquivo.url }}" target="_blank">Baixar</a>
-        </td>
-        <td>
-            {% if request.user.is_staff or trabalho.autor == request.user %}
-                <form action="{% url 'excluir_trabalho' trabalho.id %}" method="post" style="display:inline;">
-                    {% csrf_token %}
-                    <button type="submit">Excluir</button>
-                </form>
-            {% else %}
-                —
-            {% endif %}
-        </td>
-    </tr>
-    {% empty %}
-    <tr>
-        <td colspan="4">Nenhum trabalho enviado.</td>
-    </tr>
-    {% endfor %}
-</table>
+    <div class="card shadow-sm border-0 rounded-3 overflow-hidden">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light border-bottom">
+                    <tr>
+                        <th class="ps-4 py-3">Título / Data</th>
+                        <th>Autor</th>
+                        <th>Arquivo</th>
+                        <th>Último Comentário</th>
+                        <th class="text-end pe-4">Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for trabalho in trabalhos %}
+                    <tr>
+                        <td class="ps-4">
+                            <div class="fw-bold text-dark">{{ trabalho.titulo }}</div>
+                            <small class="text-muted"><i class="bi bi-calendar3"></i> {{ trabalho.data_envio|date:"d/m/Y H:i" }}</small>
+                        </td>
+                        <td><span class="badge bg-light text-dark border">{{ trabalho.autor.username }}</span></td>
+                        <td>
+                            <a href="{{ trabalho.arquivo.url }}" target="_blank" class="btn btn-sm btn-outline-primary rounded-pill px-3">
+                                📂 Baixar PDF
+                            </a>
+                        </td>
+                        <td>
+                            {% with comentario=trabalho.comentarios.last %}
+                                {% if comentario %}
+                                    <div class="small bg-primary bg-opacity-10 p-2 rounded text-primary">
+                                        <strong>{{ comentario.professor.username }}:</strong> {{ comentario.texto|truncatechars:30 }}
+                                    </div>
+                                {% else %}
+                                    <span class="text-muted small italic">Sem avaliações</span>
+                                {% endif %}
+                            {% endwith %}
+                        </td>
+                        <td class="text-end pe-4">
+                            <div class="btn-group shadow-sm">
+                                {% if perfil.tipo == 'ALUNO' and trabalho.autor == user %}
+                                    <a href="{% url 'editar_trabalho' trabalho.id %}" class="btn btn-sm btn-white border" title="Editar"><i class="bi bi-pencil"></i></a>
+                                {% endif %}
 
-<a href="{% url 'logout' %}">Sair</a>
+                                {% if perfil.tipo == 'PROFESSOR' %}
+                                    <a href="{% url 'comentar_trabalho' trabalho.id %}" class="btn btn-sm btn-white border" title="Comentar"><i class="bi bi-chat-dots"></i></a>
+                                {% endif %}
 
+                                {% if perfil.tipo == 'ADMIN' or trabalho.autor == user %}
+                                    <form action="{% url 'excluir_trabalho' trabalho.id %}" method="post" class="d-inline">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-sm btn-white border text-danger" onclick="return confirm('Excluir este trabalho?')">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </form>
+                                {% endif %}
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" class="text-center py-5">
+                            <img src="{% static 'img/empty.svg' %}" alt="" style="width: 80px; opacity: 0.3;">
+                            <p class="text-muted mt-2">Nenhum trabalho encontrado para sua busca.</p>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
 
+    <div class="mt-5 pt-5 border-top text-center">
+        <p class="text-muted small fw-bold text-uppercase mb-4" style="letter-spacing: 2px;">Realização e Apoio</p>
+        <div class="d-flex justify-content-center align-items-center gap-4">
+            <img src="{% static 'image/logo_instituicao1.png' %}" alt="Logo 1" style="max-height: 45px; opacity: 0.7; filter: grayscale(100%);">
+            <div style="width: 1px; height: 30px; background-color: #dee2e6;"></div>
+            <img src="{% static 'image/logo_instituicao2.png' %}" alt="Logo 2" style="max-height: 45px; opacity: 0.7; filter: grayscale(100%);">
+            <div class="divisor-logos"></div>
+            <img src="{% static 'image/logo_instituicao3.jpeg' %}" alt="Logo 3" style="max-height: 45px; opacity: 0.7; filter: grayscale(100%);">
+        </div>
+    </div>
+</div>
 
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+{% endblock %}

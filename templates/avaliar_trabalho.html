@@ -1,0 +1,20 @@
+<h2>Avaliar Trabalho</h2>
+
+<p><strong>{{ trabalho.titulo }}</strong></p>
+
+<form method="post">
+    {% csrf_token %}
+
+    <label>Escolha a avaliação:</label><br><br>
+
+    {% for i in 1|make_list:"12345" %}
+        <input type="radio" name="estrelas" value="{{ forloop.counter }}" required>
+        {{ forloop.counter }} ⭐<br>
+    {% endfor %}
+
+    <br>
+    <button type="submit">Enviar Avaliação</button>
+</form>
+
+<br>
+<a href="{% url 'dashboard' %}">Voltar</a>

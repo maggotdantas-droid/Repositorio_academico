@@ -7,3 +7,7 @@ class TrabalhoForm(forms.ModelForm):
         fields = ['titulo','descricao','arquivo']
 
 
+class AvaliacaoForm(forms.ModelForm):
+    class Meta:
+        model = Trabalho
+        fields = ['avaliacao'] # Aqui você pode incluir o texto do comentário também

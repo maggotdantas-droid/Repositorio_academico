@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+
+            <div class="mb-3">
+                <a href="{% url 'dashboard' %}" class="text-decoration-none text-muted small">
+                    ← Voltar para a Dashboard
+                </a>
+            </div>
+
+            <div class="card shadow border-0">
+                <div class="card-header bg-primary text-white py-3 text-center">
+                    <h5 class="mb-0 fw-bold">Feedback do Professor</h5>
+                </div>
+
+                <div class="card-body p-4 p-md-5">
+
+                    {% if trabalho.comentarios.all %}
+                        {% if user in trabalho.comentarios.all.values_list_of_professors %} {# Nota: Lógica depende do teu Model #}
+                        {% endif %}
+
+                        <div class="alert alert-info border-0 shadow-sm mb-4">
+                            <div class="d-flex">
+                                <span class="me-2">ℹ️</span>
+                                <div>
+                                    <strong>Atenção:</strong> Você já fez um comentário neste trabalho!
+                                    O envio de um novo poderá substituir ou acumular ao anterior.
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    <div class="mb-4 p-3 bg-light rounded border-start border-4 border-primary">
+                        <p class="mb-1 text-muted small text-uppercase fw-bold">Trabalho:</p>
+                        <h5 class="mb-0">{{ trabalho.titulo }}</h5>
+                    </div>
+
+                    <form method="post">
+                        {% csrf_token %}
+
+                        <div class="form-style-container">
+                            {{ form.as_p }}
+                        </div>
+
+                        <hr class="my-4">
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary btn-lg fw-bold shadow-sm">
+                                Salvar Comentário
+                            </button>
+                            <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary">
+                                Cancelar
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .form-style-container p { margin-bottom: 1.2rem; font-weight: 500; }
+    .form-style-container input,
+    .form-style-container textarea {
+        display: block; width: 100%; padding: 0.6rem 0.75rem;
+        border: 1px solid #dee2e6; border-radius: 0.375rem;
+    }
+    .form-style-container textarea { min-height: 120px; }
+    .form-style-container label { margin-bottom: 0.5rem; display: block; color: #495057; }
+</style>
+{% endblock %}

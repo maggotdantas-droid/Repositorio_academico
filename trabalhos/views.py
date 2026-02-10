@@ -1,4 +1,3 @@
-from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from .forms import TrabalhoForm
 
@@ -15,4 +14,9 @@ def enviar_trabalho(request):
         form = TrabalhoForm()
     return render(request, 'trabalhos/enviar_trabalho.html', {'form': form})
 
+
+
+
 # Create your views here.
+from django.shortcuts import render, redirect
+
